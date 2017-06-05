@@ -1,3 +1,11 @@
-<h1>
-  {{title}}
-</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <button class="btn" (click)="clicked()">Click</button>
+            <p #text style="width:100%; border: solid 1px;">123</p>
+            <a routerLink="/formular-editor" routerLinkActive="active">Formulareditor</a>
+        </div>
+    </div>
+</div>
+
+<router-outlet></router-outlet>

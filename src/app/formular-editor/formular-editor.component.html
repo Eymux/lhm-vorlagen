@@ -1,0 +1,11 @@
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <form [formGroup]="form" novalidate (ngSubmit)="save()">
+                <button type="submit">Submit</button>
+                <ng-container *ngFor="let field of controls;" appWmfield [label]="field.name" [control]="field.control">
+                </ng-container>
+            </form>
+        </div>
+    </div>
+</div>
