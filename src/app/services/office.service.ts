@@ -50,6 +50,21 @@ export class OfficeService {
         });
     }
 
+    updateContentControls(data) {
+        Word.run(context => {
+            for (var c of data) {
+                var doc = context.document;
+
+                var controls = doc.contentControls;
+                var f = controls.getByTitle(c.title).getFirst();
+
+                f.insertText(c.text, 'Replace');
+            }
+
+            return context.sync();
+        });
+    }
+
     showDialog(url: string, options?: Office.DialogOptions, callback?: (result: Office.AsyncResult) => void) {
         Office.context.ui.displayDialogAsync(url, options, callback);
     }

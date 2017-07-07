@@ -20,6 +20,6 @@ export class WmfieldDirective {
         var factory = this.resolver.resolveComponentFactory<any>(InputFieldComponent);
         this.component = this.container.createComponent(factory);
         this.component.instance.name = this.label;
-        this.component.instance.control = this.control;
+        this.component.instance.value = this.control.value;
     }
 }

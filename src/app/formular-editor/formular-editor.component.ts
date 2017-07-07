@@ -17,6 +17,10 @@ export class FormularEditorComponent implements OnInit {
 
     ngOnInit() {
         this.form = this.formbuilder.group({});
+        this.form.valueChanges.subscribe(data => {
+            debugger;
+            console.log(data);
+        });
 
         this.office.getAllContentControls()
             .then(controls => {
