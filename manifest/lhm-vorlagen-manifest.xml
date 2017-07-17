@@ -26,7 +26,7 @@
         </Sets>
     </Requirements>
     <DefaultSettings>
-        <SourceLocation DefaultValue="https://myarlt.com:4200/" />
+        <SourceLocation DefaultValue="http://localhost:4200/" />
     </DefaultSettings>
     <Permissions>ReadWriteDocument</Permissions>
 
