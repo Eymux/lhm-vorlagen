@@ -12,46 +12,56 @@ export class OfficeService {
 
     constructor(private http: Http) { }
 
-    insertDocumentFromURL(url: string) {
-        this.http.get(url, { responseType: ResponseContentType.ArrayBuffer })
+    async insertDocumentFromURL(url: string) : Promise<void> {
+         await this.http.get(url, { responseType: ResponseContentType.ArrayBuffer })
             .map(res => {
                 return res.arrayBuffer();
             })
             .subscribe(buf => {
+                debugger;
                 Word.run(context => {
                     var body = context.document.body;
                     body.insertFileFromBase64(this.encode(buf), Word.InsertLocation.end);
                     return context.sync();
                 });
             });
-
     }
 
-    getContentControl(title: string) : OfficeExtension.IPromise<Word.ContentControl> {
-        return Word.run(context => {
+    async getContentControl(title: string) : Promise<Word.ContentControl> {
+        var control;
+
+        await Word.run(async(context) => {
             var doc = context.document;
 
             var controls = doc.contentControls;
             var fields = controls.getByTitle(title);
-            var f = fields.getFirst()
-            f.load('tag, title, text');
+            control = fields.getFirst()
+            control.load('tag, title, text');
 
-            return context.sync(f)
+            await context.sync(control)
         });
+
+        return control;
     }
 
-    getAllContentControls() : OfficeExtension.IPromise<Word.ContentControlCollection> {
-        return Word.run(context => {
+    async getAllContentControls() : Promise<Word.ContentControlCollection> {
+        var cc;
+
+        await Word.run(async(context) => {
             var doc = context.document;
             var controls = doc.contentControls;
             controls.load('items');
 
-            return context.sync(controls);
+            cc = controls;
+
+            await context.sync(controls);
         });
+
+        return cc;
     }
 
-    updateContentControls(data) {
-        Word.run(context => {
+    async updateContentControls(data) : Promise<void> {
+        await Word.run(async(context) => {
             for (var c of data) {
                 var doc = context.document;
 
@@ -61,7 +71,7 @@ export class OfficeService {
                 f.insertText(c.text, 'Replace');
             }
 
-            return context.sync();
+            await context.sync();
         });
     }
 

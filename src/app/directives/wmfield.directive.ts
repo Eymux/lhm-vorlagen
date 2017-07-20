@@ -37,8 +37,9 @@ export class WmfieldDirective implements ControlValueAccessor {
 
     onChange(value: any) {
         var data = [{ title: this.label, text: value }]
-        this.office.updateContentControls(data);
-        this.propagateChange(value);
+        this.office.updateContentControls(data).then(() => {
+            this.propagateChange(value);            
+        });
     }
 
     writeValue(val: any) {
