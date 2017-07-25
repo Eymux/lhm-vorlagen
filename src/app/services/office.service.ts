@@ -18,7 +18,6 @@ export class OfficeService {
                 return res.arrayBuffer();
             })
             .subscribe(buf => {
-                debugger;
                 Word.run(context => {
                     var body = context.document.body;
                     body.insertFileFromBase64(this.encode(buf), Word.InsertLocation.end);
@@ -62,11 +61,12 @@ export class OfficeService {
 
     async updateContentControls(data) : Promise<void> {
         await Word.run(async(context) => {
-            for (var c of data) {
-                var doc = context.document;
+            var doc = context.document;
+            var controls = doc.contentControls;
 
-                var controls = doc.contentControls;
-                var f = controls.getByTitle(c.title).getFirst();
+            for (var c of data) {
+                var res = controls.getByTitle(c.title);
+                var f = res.getFirstOrNullObject();
 
                 f.insertText(c.text, 'Replace');
             }
