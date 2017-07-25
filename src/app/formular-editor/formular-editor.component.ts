@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ApplicationRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { OfficeService } from '../services/office.service';
@@ -12,29 +12,19 @@ export class FormularEditorComponent implements OnInit {
     private form : FormGroup;
     private controls = [];
 
-    constructor(private formbuilder: FormBuilder, private office: OfficeService) {
+    constructor(private formbuilder: FormBuilder, private office: OfficeService, private appRef: ApplicationRef) {
     }
 
-    ngOnInit() {
+    async ngOnInit() : Promise<void> {
         this.form = this.formbuilder.group({});
-        // this.form.valueChanges.subscribe(data => {
-        //     debugger;
-        //     console.log(data);
-        // });
 
-        this.office.getAllContentControls()
-            .then(controls => {
-                for (var c of controls.items) {
-                    if (c.tag === "WollMux") {
-                        var ctrl = this.formbuilder.control(c.text);
-                        // ctrl.valueChanges.subscribe(data => {
-                        //     debugger;
-                        //     console.log(data);
-                        // });
-                        this.controls.push({ name: c.title, control: ctrl });
-                    }
-                }
-            });
+        var controls = await this.office.getAllContentControls();
+        for (var c of controls.items) {
+            if (c.tag === "WollMux") {
+                var ctrl = this.formbuilder.control(c.text);
+                this.controls.push({ name: c.title, control: ctrl });
+            }
+        }
     }
 
     save() {

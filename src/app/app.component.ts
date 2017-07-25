@@ -44,7 +44,8 @@ export class AppComponent implements OnInit {
     }
 
     clicked() {
-        //this.office.insertDocumentFromURL("http://192.168.1.104:4200/assets/test1.docx");
+        debugger;
+        this.office.insertDocumentFromURL("https://192.168.1.104:4200/assets/test1.docx");
 
         // this.office.getContentControl('Field1')
         //     .then(f => {
@@ -53,12 +54,12 @@ export class AppComponent implements OnInit {
         //         return f.context.sync();
         //     });
 
-        var url = `https://${location.host}/formular-editor`;
-        this.office.showDialog(url, { width: 15, height: 27 }, function (asyncResult) {
-            if (asyncResult.status !== Office.AsyncResultStatus.Succeeded) {
-                // TODO: Handle error.
-                return;
-            }
-        });
+        // var url = `https://${location.host}/formular-editor`;
+        // this.office.showDialog(url, { width: 15, height: 27 }, function (asyncResult) {
+        //     if (asyncResult.status !== Office.AsyncResultStatus.Succeeded) {
+        //         // TODO: Handle error.
+        //         return;
+        //     }
+        // });
     }
 }
