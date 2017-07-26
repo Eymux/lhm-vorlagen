@@ -12,6 +12,8 @@ if (environment.production) {
 
 if (window.hasOwnProperty('Office') && window.hasOwnProperty('Word')) {
     Office.initialize = function(reason) {
+        // Schaltet die Telemetry von Office.js aus.
+        OSF.Logger = null;
         platformBrowserDynamic().bootstrapModule(AppModule);
     };
 } else {
