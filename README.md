@@ -1,10 +1,47 @@
-# LhmVorlagen
+# Vorlagensystem der LHM
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.0.
+## Installation
 
-## Development server
+[Node.js](https://nodejs.org) muss installiert sein.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+`npm install -g @angular/cli`
+
+Installiert [angular-cli](https://github.com/angular/angular-cli).
+
+`npm install`
+
+Installiert alle Abhängigkeiten des Projekts.
+
+## Starten des Servers
+
+`ng serve`
+
+Startet den Entwicklungsserver auf `http://localhost:4200/`.
+
+`ng serve --sourcemaps=true`
+
+Startet den Server mit zusätzlichen Debuginformationen.
+
+## Einstellungen
+
+### Internet Explorer
+
+Unter Extras/Internetoptionen/Erweitert/Einstellungen/Browsen müssen die Checkboxen *Skriptdebugging deaktivieren (Andere)* und *Skriptdebugging deaktivieren (Internet Explorer)* abgeschaltet sein.
+
+### Microsoft Office
+
+Microsoft Office muss auf das Manifest `manifest/lhm-vorlagen-manifest.xml` zugreifen können. Dazu muss der Ordner `manifest` im Netzwerk freigegeben werden ([Anleitung](http://praxistipps.chip.de/ordner-fuer-netzwerk-freigeben-so-funktionierts_19213)).
+
+Der Netzwerkpfad muss in Microsoft Office als Trusted Catalog registriert werden (`File/Options/Trust Center/Trust Center Settings/Trusted Add-In Catalogs`).
+
+Anschließend kann das Add-In über das Einfügen-Menü zu einem neuen Dokument hinzugefügt werden.
+
+## Bedienung
+Zum Einfügen von Content Controls in ein Dokument muss der Developer-Tab im Ribbon aktiviert werden ([Anleitung](https://support.office.com/en-us/article/Show-the-Developer-tab-e1192344-5e56-4d45-931b-e5fd9bea2d45)).
+
+Das Add-In kann zur Zeit nur Text-Controls lesen. Die Controls müssen einen Titel haben und das Tag 'WollMux'. Andere Felder werden ignoriert.
+
+Beim Click auf den Link *Formulareditor* werden alle Content-Controls eingelesen und im Fenster des Add-Ins als Textfelder angezeigt. Über diese Textfelder kann der Text in den Content-Controls bearbeitet werden.
 
 ## Code scaffolding
 
