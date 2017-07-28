@@ -43,6 +43,15 @@ Das Add-In kann zur Zeit nur Text-Controls lesen. Die Controls müssen einen Tit
 
 Beim Click auf den Link *Formulareditor* werden alle Content-Controls eingelesen und im Fenster des Add-Ins als Textfelder angezeigt. Über diese Textfelder kann der Text in den Content-Controls bearbeitet werden.
 
+## Dokumentation
+Zur Erzeugung der Dokumentation muss Typdoc installiert werden.
+
+`npm install typedoc --global`
+
+Die Dokumentation wird mit dem folgenden Kommando im Ordner *doc* erzeugt.
+
+`npm run docs`
+
 ## Code scaffolding
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive/pipe/service/class/module`.
