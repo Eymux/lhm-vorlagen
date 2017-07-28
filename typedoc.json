@@ -11,5 +11,6 @@
   "stripInternal": "true",
   "suppressExcessPropertyErrors": "true",
   "suppressImplicitAnyIndexErrors": "true",
-  "module": "commonjs"
+  "module": "commonjs",
+  "excludePrivate": "true"
 }
