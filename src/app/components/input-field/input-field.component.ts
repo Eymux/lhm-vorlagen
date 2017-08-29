@@ -9,6 +9,7 @@ import { FormControl } from '@angular/forms';
 export class InputFieldComponent {
     @Input() name: string;
     @Input() value: string;
+    @Input() maxlength: number;
 
     @Output() changed = new EventEmitter<string>();
 

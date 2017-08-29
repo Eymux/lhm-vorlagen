@@ -93,7 +93,7 @@ export class OfficeService {
      * @param {} data
      *  Dictionary mit den Feldern 'title' und 'text'. Z.B. { title: 'Feld', text: 'Inhalt' }
      */
-    async updateContentControls(data) : Promise<void> {
+    async updateContentControl(data) : Promise<void> {
         await Word.run(async(context) => {
             var doc = context.document;
             var controls = doc.contentControls;

@@ -1,8 +1,2 @@
-<div class="container">
-    <div class="row">
-        <div class="col-sm-12">
-            <ng-container *ngFor="let field of controls;" appWmfield [label]="field.name" [control]="field.control" ngModel>
-            </ng-container>
-        </div>
-    </div>
-</div>
+<ng-container *ngFor="let field of controls;" appWmfield [label]="field.name" [control]="field.control" [maxlength]="field.maxlength" ngModel>
+</ng-container>

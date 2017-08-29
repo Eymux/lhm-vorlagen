@@ -1,11 +1,21 @@
-<div class="container">
+<div class="container" style="margin-top: 16px;">
     <div class="row">
         <div class="col-sm-12">
-            <button class="btn" (click)="clicked()">Click</button>
-            <p #text style="width:100%; border: solid 1px;">123</p>
-            <a routerLink="/formular-editor" routerLinkActive="active">Formulareditor</a>
+            <button class="btn btn-lg btn-primary btn-block" (click)="onInsertDocument()">Dokument einfügen</button>
         </div>
     </div>
-</div>
+    <div class="row" style="margin-top: 8px;">
+        <div class="col-sm-12">
+            <button class="btn btn-lg btn-primary btn-block" (click)="onOpenDialog()">Dialog öffnen</button>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 16px;">
+        <div class="col-sm-12">
+            <button class="btn btn-lg btn-primary btn-block" routerLink="/dynamic-editor" routerLinkActive="active">Formular</button>
+        </div>
+    </div>
 
-<router-outlet></router-outlet>
+    <hr/>
+
+    <router-outlet></router-outlet>
+</div>
