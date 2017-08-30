@@ -15,6 +15,7 @@ import { OfficeService } from '../services/office.service';
 export class WmfieldDirective implements ControlValueAccessor {
     @Input() label: string;
     @Input() control: FormControl;
+    @Input() maxlength: number;
 
     private component;
     private value: string;
@@ -32,13 +33,14 @@ export class WmfieldDirective implements ControlValueAccessor {
         this.component = this.container.createComponent(factory);
         this.component.instance.name = this.label;
         this.component.instance.value = this.control.value;
+        this.component.instance.maxlength = this.maxlength;
         this.component.instance.changed.subscribe(this.onChange.bind(this));
     }
 
     onChange(value: any) {
-        var data = [{ title: this.label, text: value }]
-        this.office.updateContentControls(data).then(() => {
-            this.propagateChange(value);            
+        var data = [{ title: this.label, text: value }];
+        this.office.updateContentControl(data).then(() => {
+            this.propagateChange(value);
         });
     }
 

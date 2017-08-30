@@ -3,11 +3,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Http, Response, ResponseContentType } from '@angular/http';
 
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-
 import { OfficeService } from './services/office.service';
 
 @Component({
@@ -44,8 +39,26 @@ export class AppComponent implements OnInit {
     }
 
     clicked() {
-        debugger;
-        this.office.insertDocumentFromURL("https://192.168.1.104:4200/assets/test1.docx");
+        var p;
+
+        this.office.getParagraphs().then(async(paragraphs) => {
+            p = paragraphs;
+            paragraphs.load('font');
+
+            await paragraphs.context.sync().then(async() => {
+                var p = paragraphs.items[2];
+                var font = p.font;
+                var ooxml = p.getOoxml();
+
+                await paragraphs.context.sync().then(() => {
+                    debugger;
+                    console.log(ooxml);
+                });
+            });
+        }).finally(() => {
+            p.context.trackedObjects.remove(p);
+        });
+
 
         // this.office.getContentControl('Field1')
         //     .then(f => {
@@ -53,13 +66,19 @@ export class AppComponent implements OnInit {
         //         f.insertText("Hello World!", 'Replace');
         //         return f.context.sync();
         //     });
+    }
 
-        // var url = `https://${location.host}/formular-editor`;
-        // this.office.showDialog(url, { width: 15, height: 27 }, function (asyncResult) {
-        //     if (asyncResult.status !== Office.AsyncResultStatus.Succeeded) {
-        //         // TODO: Handle error.
-        //         return;
-        //     }
-        // });
+    onInsertDocument() {
+        this.office.insertDocumentFromURL("https://192.168.1.104:4200/assets/test1.docx", 'End');
+    }
+
+    onOpenDialog() {
+        var url = `https://${location.host}/formular-editor`;
+        this.office.showDialog(url, { width: 64, height: 64 }, function (asyncResult) {
+            if (asyncResult.status !== Office.AsyncResultStatus.Succeeded) {
+                // TODO: Handle error.
+                return;
+            }
+        });
     }
 }

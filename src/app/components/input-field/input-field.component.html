@@ -1,2 +1,6 @@
-<label for="input">{{name}}</label>
-<input type="text" class="form-control" id="input" [ngModel]="value" (ngModelChange)="onChange($event)" />
+<div class="row input-field">
+    <div class="col-sm-12">
+        <label for="input">{{name}}</label>
+        <input type="text" class="form-control" id="input" [ngModel]="value" (ngModelChange)="onChange($event)" [maxLength]="maxlength" />
+    </div>
+</div>
