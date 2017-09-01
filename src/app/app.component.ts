@@ -39,25 +39,25 @@ export class AppComponent implements OnInit {
     }
 
     clicked() {
-        var p;
+        //var p;
 
-        this.office.getParagraphs().then(async(paragraphs) => {
-            p = paragraphs;
-            paragraphs.load('font');
-
-            await paragraphs.context.sync().then(async() => {
-                var p = paragraphs.items[2];
-                var font = p.font;
-                var ooxml = p.getOoxml();
-
-                await paragraphs.context.sync().then(() => {
-                    debugger;
-                    console.log(ooxml);
-                });
-            });
-        }).finally(() => {
-            p.context.trackedObjects.remove(p);
-        });
+        // this.office.getParagraphs().then(async(paragraphs) => {
+        //     p = paragraphs;
+        //     paragraphs.load('font');
+        //
+        //     await paragraphs.context.sync().then(async() => {
+        //         var p = paragraphs.items[2];
+        //         var font = p.font;
+        //         var ooxml = p.getOoxml();
+        //
+        //         await paragraphs.context.sync().then(() => {
+        //             debugger;
+        //             console.log(ooxml);
+        //         });
+        //     });
+        // }).finally(() => {
+        //     p.context.trackedObjects.remove(p);
+        // });
 
 
         // this.office.getContentControl('Field1')
@@ -69,7 +69,7 @@ export class AppComponent implements OnInit {
     }
 
     onInsertDocument() {
-        this.office.insertDocumentFromURL("https://192.168.1.104:4200/assets/test1.docx", 'End');
+        this.office.insertDocumentFromURL("https://127.0.0.1:4200/assets/test1.docx", 'End');
     }
 
     onOpenDialog() {
