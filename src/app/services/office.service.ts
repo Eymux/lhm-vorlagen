@@ -53,7 +53,7 @@ export class OfficeService {
      */
     async getContentControl(title: string) : Promise<Word.ContentControl> {
         var control;
-
+        
         await Word.run(async(context) => {
             var doc = context.document;
 

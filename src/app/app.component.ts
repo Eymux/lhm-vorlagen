@@ -82,19 +82,48 @@ export class AppComponent implements OnInit {
         });
     }
 
-    //Create Binding to selected Text and change Text
-    onCreatedBindingAndChangeSelectedText(event) {
+    onCreatedBindingAddText(event) {
         Office.context.document.bindings.addFromSelectionAsync(Office.BindingType.Text, { id: 'myBinding' }, function (asyncResult) {
         if (asyncResult.status == Office.AsyncResultStatus.Failed) {
             write('Action failed. Error: ' + asyncResult.error.message);
         } else {
             write('Added new binding with type: ' + asyncResult.value.type + ' and id: ' + asyncResult.value.id);
-            Office.select('bindings#myBinding').setDataAsync('Text Changed',function (asyncResult){
+            Office.select('bindings#myBinding').setDataAsync('Added',function (asyncResult){
                 if (asyncResult.status == "failed") {
                     write('Error: ' + asyncResult.error.message);
                 }
             });
         }
+        });
+
+        function write(message){
+            document.getElementById('message').innerText += message;
+        }
+    }
+
+    onHideText(event) {
+        Word.run(function (context) {
+            debugger
+
+            var ccontrols = context.document.contentControls;
+            context.document.save();
+            context.load(ccontrols);
+            return context.sync().then(function(){
+                var targetControl = ccontrols.getByTag('Test1').getFirst();
+                context.load(targetControl);
+                context.sync().then(function(){
+                    //wirft aus noch unbekannten Gründen invalidArgumentException bei office.debug.js Z: 9010
+                    //exception sagt nicht viel: "{\"name\":\"OfficeExtension.Error\",\"code\":\"InvalidArgument\",\"message\":\"InvalidArgument\",\"traceMessages\":[],\"innerError\":null,\"debugInfo\":{\"code\":\"InvalidArgument\",\"message\":\"InvalidArgument\",\"errorLocation\":\"\"}}"
+                    targetControl.insertText('Test','Replace');
+                    targetControl.appearance = "hidden";
+                        console.log('LOG');
+                    context.sync();
+                }).catch(function (e) {
+                    write(e.message + " " + e.description);
+                });
+            }).catch(function (e) {
+                write(e.message + " " + e.description);
+            });;
         });
 
         function write(message){
