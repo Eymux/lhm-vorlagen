@@ -81,4 +81,24 @@ export class AppComponent implements OnInit {
             }
         });
     }
+
+    //Create Binding to selected Text and change Text
+    onCreatedBindingAndChangeSelectedText(event) {
+        Office.context.document.bindings.addFromSelectionAsync(Office.BindingType.Text, { id: 'myBinding' }, function (asyncResult) {
+        if (asyncResult.status == Office.AsyncResultStatus.Failed) {
+            write('Action failed. Error: ' + asyncResult.error.message);
+        } else {
+            write('Added new binding with type: ' + asyncResult.value.type + ' and id: ' + asyncResult.value.id);
+            Office.select('bindings#myBinding').setDataAsync('Text Changed',function (asyncResult){
+                if (asyncResult.status == "failed") {
+                    write('Error: ' + asyncResult.error.message);
+                }
+            });
+        }
+        });
+
+        function write(message){
+            document.getElementById('message').innerText += message;
+        }
+    }
 }
