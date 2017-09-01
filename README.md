@@ -12,13 +12,24 @@ Installiert [angular-cli](https://github.com/angular/angular-cli).
 
 Installiert alle Abhängigkeiten des Projekts.
 
+## SSL Unterstützung
+
+[browser-sync](https://www.browsersync.io/) muss installiert sein.
+
+`npm install browser-sync`
+
+1) Zertifikate von ..node_modules\browser-sync\lib\server nach {project_root}\certs kopieren.
+2) Rechte Maustaste auf server.crt -> Installieren
+3) Zertifikat für aktuellen Nutzer oder systemweit installieren.
+4) Bei Zertifikatsspeicherort "Vertrauenswürdige Stammzertifizierungsstellen" auswählen.
+
 ## Starten des Servers
 
-`ng serve`
+`ng serve --ssl 1 -ssl-key "cert\server.key" --ssl-cert "cert\server.crt"`
 
-Startet den Entwicklungsserver auf `http://localhost:4200/`.
+Startet den Entwicklungsserver auf `https://localhost:4200/`.
 
-`ng serve --sourcemaps=true`
+`ng serve --ssl 1 -ssl-key "cert\server.key" --ssl-cert "cert\server.crt" --sourcemaps=true`
 
 Startet den Server mit zusätzlichen Debuginformationen.
 
@@ -30,7 +41,7 @@ Unter Extras/Internetoptionen/Erweitert/Einstellungen/Browsen müssen die Checkb
 
 ### Microsoft Office
 
-Microsoft Office muss auf das Manifest `manifest/lhm-vorlagen-manifest.xml` zugreifen können. Dazu muss der Ordner `manifest` im Netzwerk freigegeben werden ([Anleitung](http://praxistipps.chip.de/ordner-fuer-netzwerk-freigeben-so-funktionierts_19213)).
+Microsoft Office muss auf das Manifest `manifest/lhm-test.xml` zugreifen können. Dazu muss der Ordner `manifest` im Netzwerk freigegeben werden ([Anleitung](http://praxistipps.chip.de/ordner-fuer-netzwerk-freigeben-so-funktionierts_19213)).
 
 Der Netzwerkpfad muss in Microsoft Office als Trusted Catalog registriert werden (`File/Options/Trust Center/Trust Center Settings/Trusted Add-In Catalogs`).
 
