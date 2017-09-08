@@ -1,5 +1,5 @@
 import { Component, OnInit, NgZone } from '@angular/core';
-import { DynamicFormControlModel, DynamicFormService, DynamicCheckboxModel, DynamicInputModel, DynamicRadioGroupModel } from "@ng2-dynamic-forms/core";
+import { DynamicFormControlModel, DynamicFormService, DynamicCheckboxModel, DynamicInputModel, DynamicRadioGroupModel, DynamicSelectModel } from "@ng2-dynamic-forms/core";
 import { FormGroup } from '@angular/forms';
 
 import { OfficeService, ControlType } from '../../services/office.service';
@@ -34,6 +34,16 @@ export class DynamicForm2Component implements OnInit {
                                 id: c.title,
                                 label: c.title,
                                 value: false
+                            });
+                            this.office.updateContentControl([{ title: c.title, text: "\u2610" }]);
+                            break;
+                        }
+                        case ControlType.ComboBox: {
+                            m = new DynamicSelectModel<string>({
+                                id: c.title,
+                                label: c.title,
+                                options: [{label: "eins", value: "eins"}, {label: "zwei", value: "zwei"}, {label: "drei", value: "drei"}],
+                                value: "eins"
                             });
                             this.office.updateContentControl([{ title: c.title, text: "\u2610" }]);
                             break;

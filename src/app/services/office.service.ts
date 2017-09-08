@@ -132,6 +132,8 @@ export class OfficeService {
 
         if (tags.find(tag => tag === "CheckBox") != null) {
             return ControlType.CheckBox;
+        } else if (tags.find(tag => tag === "ComboBox") != null) {
+            return ControlType.ComboBox;
         } else {
             return ControlType.RichText;
         }
