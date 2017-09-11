@@ -81,4 +81,15 @@ export class AppComponent implements OnInit {
             }
         });
     }
+
+    hideSelection() {
+        Word.run(context => {
+            var range = context.document.getSelection();
+            var ooxml = range.getOoxml();
+            //(<any>range).insertBookmark("_Hidden");
+            return context.sync().then(() => {
+                console.log(ooxml);
+            });
+        });
+    }
 }

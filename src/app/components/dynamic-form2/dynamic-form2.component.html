@@ -1,5 +1,5 @@
 <h2>Formular</h2>
 
-<form [formGroup]="formGroup">
+<form [formGroup]="formGroup" *ngIf="formGroup != null">
     <dynamic-bootstrap-form [group]="formGroup" [model]="formModel"></dynamic-bootstrap-form>
 </form>

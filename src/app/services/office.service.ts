@@ -8,6 +8,13 @@ import 'rxjs/add/operator/catch';
 
 export type InsertLocation = 'Replace' | 'Start' | 'End' | 'Before' | 'After';
 
+export enum ControlType {
+    RichText,
+    CheckBox,
+    ComboBox,
+    Button
+}
+
 
 /**
  * Stellt High-Level-Funktionen für die Arbeit mit MS Office-Dokumenten
@@ -107,6 +114,29 @@ export class OfficeService {
 
             await context.sync();
         });
+    }
+
+    getTags(control: Word.ContentControl) : string[] {
+        var tag = control.tag;
+        return tag.split(" ");
+    }
+
+    isWollMux(control: Word.ContentControl) : boolean {
+        var tags = this.getTags(control);
+        var wmTag = tags.find(tag => tag === "WollMux");
+        return (wmTag != null);
+    }
+
+    getType(control: Word.ContentControl) : ControlType {
+        var tags = this.getTags(control);
+
+        if (tags.find(tag => tag === "CheckBox") != null) {
+            return ControlType.CheckBox;
+        } else if (tags.find(tag => tag === "ComboBox") != null) {
+            return ControlType.ComboBox;
+        } else {
+            return ControlType.RichText;
+        }
     }
 
     /**

@@ -1,8 +1,8 @@
 import { Component, OnInit, NgZone } from '@angular/core';
-import { DynamicFormControlModel, DynamicFormService, DynamicCheckboxModel, DynamicInputModel, DynamicRadioGroupModel } from "@ng2-dynamic-forms/core";
+import { DynamicFormControlModel, DynamicFormService, DynamicCheckboxModel, DynamicInputModel, DynamicRadioGroupModel, DynamicSelectModel } from "@ng2-dynamic-forms/core";
 import { FormGroup } from '@angular/forms';
 
-import { OfficeService } from '../../services/office.service';
+import { OfficeService, ControlType } from '../../services/office.service';
 
 @Component({
     selector: 'app-dynamic-form2',
@@ -17,12 +17,11 @@ export class DynamicForm2Component implements OnInit {
 
     ngOnInit() {
         this.office.getAllContentControls().then ((controls) => {
-            debugger
             for (var c of controls.items) {
-                if (c.tag.startsWith("WollMux")) {
+                if (this.office.isWollMux(c)) {
                     var m;
-                    switch (c.type) {
-                        case "RichText": {
+                    switch (this.office.getType(c)) {
+                        case ControlType.RichText: {
                             m = new DynamicInputModel({
                                 id: c.title,
                                 label: c.title,
@@ -30,18 +29,38 @@ export class DynamicForm2Component implements OnInit {
                             });
                             break;
                         }
-                        case "CheckBox": {
+                        case ControlType.CheckBox: {
                             m = new DynamicCheckboxModel({
                                 id: c.title,
                                 label: c.title,
                                 value: false
                             });
+                            this.office.updateContentControl([{ title: c.title, text: "\u2610" }]);
+                            break;
+                        }
+                        case ControlType.ComboBox: {
+                            m = new DynamicSelectModel<string>({
+                                id: c.title,
+                                label: c.title,
+                                options: [{label: "eins", value: "eins"}, {label: "zwei", value: "zwei"}, {label: "drei", value: "drei"}],
+                                value: "eins"
+                            });
+                            this.office.updateContentControl([{ title: c.title, text: "\u2610" }]);
                             break;
                         }
                     }
                     this.formModel.push(m);
                     m.valueUpdates.subscribe(function(model, value) {
-                        var data = [{ title: model.id, text: value }];
+                        var data;
+                        if (model.type === "CHECKBOX") {
+                            if (model.value) {
+                                data = [{ title: model.id, text: "\u2611" }];
+                            } else {
+                                data = [{ title: model.id, text: "\u2610" }];
+                            }
+                        } else {
+                            data = [{ title: model.id, text: value }];
+                        }
                         this.office.updateContentControl(data);
                     }.bind(this, m));
 
@@ -62,9 +81,8 @@ export class DynamicForm2Component implements OnInit {
                     //     }
                     // });
                 }
+                this.formGroup = this.formService.createFormGroup(this.formModel);
             }
-
-            this.formGroup = this.formService.createFormGroup(this.formModel);
         });
     }
 }
