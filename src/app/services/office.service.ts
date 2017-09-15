@@ -210,6 +210,45 @@ export class OfficeService {
         }).catch(error => console.log(error));
     }
 
+    async addXml(xml: string) : Promise<string> {
+        return new Promise<string>(resolve => {
+            Office.context.document.customXmlParts.addAsync(xml, null, result => {
+                resolve(result.value.id);
+            });
+        });
+    }
+
+    async getXmlById(id: string) : Promise<string> {
+        return new Promise<string>(resolve => {
+            Office.context.document.customXmlParts.getByIdAsync(id, result => {
+                result.value.getXmlAsync({}, e => {
+                    resolve(e.value);
+                });
+            });
+        });
+    }
+
+    async getXmlIdsByNamespace(ns: string) : Promise<string[]> {
+        return new Promise<string[]>(resolve => {
+            Office.context.document.customXmlParts.getByNamespaceAsync(ns, result => {
+                var ret = [];
+                for (let r of <Office.CustomXmlPart[]>result.value) {
+                    ret.push(r.id);
+                }
+                resolve(ret);
+            });
+        });
+    }
+
+    async deleteXmlById(id: string) : Promise<void> {
+        return new Promise<void>(resolve => {
+            Office.context.document.customXmlParts.getByIdAsync(id, result => {
+                result.value.deleteAsync(() => {});
+                resolve();
+            });
+        });
+    }
+
     /**
      * Öffnet eine Webseite in einem modalen Dialog.
      * Funktioniert nur mit HTTPS.

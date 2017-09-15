@@ -93,4 +93,14 @@ export class AppComponent implements OnInit {
             return context.sync();
         });
     }
+
+    async testXml() {
+        this.office.addXml('<test xmlns="http://muenchen.de"></test>').then(id => {
+            console.log(id);
+
+            this.office.deleteXmlById(id).then(() => {
+                console.log("Success!");
+            });
+        });
+    }
 }
