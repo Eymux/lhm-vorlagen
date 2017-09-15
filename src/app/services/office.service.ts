@@ -6,6 +6,8 @@ import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
+import { XMLSerializer } from 'xmldom';
+
 export type InsertLocation = 'Replace' | 'Start' | 'End' | 'Before' | 'After';
 
 export enum ControlType {
@@ -179,6 +181,33 @@ export class OfficeService {
         });
 
         return paragraphs;
+    }
+
+    async hideRange(range: Word.Range) : Promise<void> {
+        await Word.run (async(context) => {
+            range.select()
+
+            await context.sync().then(() => {
+                var ooxml = Office.context.document.getSelectedDataAsync(Office.CoercionType.Ooxml, result => {
+                    var parser = new DOMParser();
+                    var doc = parser.parseFromString(result.value, 'application/xml');
+
+                    var el = doc.getElementsByTagName('w:t');
+
+                    for (var i=0; i < el.length; i++) {
+                        var t = el.item(i);
+                        var rpr = t.previousSibling;
+                        var vanish = doc.createElementNS('http://schemas.openxmlformats.org/wordprocessingml/2006/main', 'w:vanish');
+                        rpr.appendChild(vanish);
+                    }
+
+                    var ser = new XMLSerializer();
+                    var xml = ser.serializeToString(doc);
+
+                    Office.context.document.setSelectedDataAsync(xml, { coercionType: Office.CoercionType.Ooxml });
+                });
+            });
+        }).catch(error => console.log(error));
     }
 
     /**

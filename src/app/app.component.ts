@@ -3,6 +3,8 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Http, Response, ResponseContentType } from '@angular/http';
 
+import { XMLSerializer } from 'xmldom';
+
 import { OfficeService } from './services/office.service';
 
 @Component({
@@ -84,12 +86,11 @@ export class AppComponent implements OnInit {
 
     hideSelection() {
         Word.run(context => {
-            var range = context.document.getSelection();
-            var ooxml = range.getOoxml();
-            //(<any>range).insertBookmark("_Hidden");
-            return context.sync().then(() => {
-                console.log(ooxml);
-            });
+            var rng = context.document.getSelection();
+            context.trackedObjects.add(rng);
+            this.office.hideRange(rng);
+            context.trackedObjects.remove(rng);
+            return context.sync();
         });
     }
 }

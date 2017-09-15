@@ -45,7 +45,6 @@ export class DynamicForm2Component implements OnInit {
                                 options: [{label: "eins", value: "eins"}, {label: "zwei", value: "zwei"}, {label: "drei", value: "drei"}],
                                 value: "eins"
                             });
-                            this.office.updateContentControl([{ title: c.title, text: "\u2610" }]);
                             break;
                         }
                     }
