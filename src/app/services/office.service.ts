@@ -61,39 +61,37 @@ export class OfficeService {
      *  Feldname des ContentControls
      */
     async getContentControl(title: string) : Promise<Word.ContentControl> {
-        var control;
+        return Word.run(context => {
+            return new Promise<Word.ContentControl>(resolve => {
+                var doc = context.document;
 
-        await Word.run(async(context) => {
-            var doc = context.document;
+                var controls = doc.contentControls;
+                var fields = controls.getByTitle(title);
+                var control = fields.getFirst()
+                control.load('tag, title, text');
 
-            var controls = doc.contentControls;
-            var fields = controls.getByTitle(title);
-            control = fields.getFirst()
-            control.load('tag, title, text');
-
-            await context.sync(control)
+                context.sync(control).then(control => {
+                    resolve(control);
+                });
+            });
         });
-
-        return control;
     }
 
     /**
      * Gibt eine Liste aller ContentControls im aktiven Dokument zurück.
      */
     async getAllContentControls() : Promise<Word.ContentControlCollection> {
-        var cc;
+        return Word.run(context => {
+            return new Promise<Word.ContentControlCollection>(resolve => {
+                var doc = context.document;
+                var controls = doc.contentControls;
+                controls.load('items');
 
-        await Word.run(async(context) => {
-            var doc = context.document;
-            var controls = doc.contentControls;
-            controls.load('items');
-
-            cc = controls;
-
-            await context.sync(controls);
+                context.sync(controls).then(controls => {
+                    resolve(controls);
+                });
+            });
         });
-
-        return cc;
     }
 
     /**
