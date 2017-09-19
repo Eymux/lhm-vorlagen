@@ -10,7 +10,7 @@ import { OfficeService } from '../services/office.service';
 })
 export class FormularEditorComponent implements OnInit {
     private form : FormGroup;
-    private controls = [];
+    controls = [];
 
     constructor(private formbuilder: FormBuilder, private office: OfficeService, private appRef: ApplicationRef) {
     }

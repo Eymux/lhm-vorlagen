@@ -52,6 +52,13 @@ Die Dokumentation wird mit dem folgenden Kommando im Ordner *doc* erzeugt.
 
 `npm run docs`
 
+## Publish
+`npm run publish`
+
+Baut eine statische Version des Add-Ins und pusht diese in den Branch gh-pages.
+Das Plugin ist über die Adresse https://eymux.github.io/lhm-vorlagen/ erreichbar. Ein entsprechendes Manifest befindet sich im Ordner `manifest`.
+
+
 ## Code scaffolding
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive/pipe/service/class/module`.
