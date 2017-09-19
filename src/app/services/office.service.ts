@@ -189,10 +189,10 @@ export class OfficeService {
     }
 
     async hideRange(range: Word.Range) : Promise<void> {
-        await Word.run (async(context) => {
-            range.select()
+        Word.run (context => {
+            range.select();
 
-            await context.sync().then(() => {
+            return context.sync().then(() => {
                 var ooxml = Office.context.document.getSelectedDataAsync(Office.CoercionType.Ooxml, result => {
                     var parser = new DOMParser();
                     var doc = parser.parseFromString(result.value, 'application/xml');
@@ -219,6 +219,31 @@ export class OfficeService {
                 });
             });
         }).catch(error => console.log(error));
+    }
+
+    async unhideRange(range: Word.Range) : Promise<void> {
+        Word.run (async(context) => {
+            range.select();
+
+            return context.sync().then(() => {
+                var ooxml = Office.context.document.getSelectedDataAsync(Office.CoercionType.Ooxml, result => {
+                    var parser = new DOMParser();
+                    var doc = parser.parseFromString(result.value, 'application/xml');
+
+                    var el = doc.getElementsByTagName('w:vanish');
+
+                    while (el.length > 0) {
+                        var t = el.item(0);
+                        t.parentNode.removeChild(t);
+                    }
+
+                    var ser = new XMLSerializer();
+                    var xml = ser.serializeToString(doc);
+
+                    Office.context.document.setSelectedDataAsync(xml, { coercionType: Office.CoercionType.Ooxml });
+                });
+            });
+        });
     }
 
     async addXml(xml: string) : Promise<string> {
