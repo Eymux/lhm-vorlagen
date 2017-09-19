@@ -7,6 +7,7 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 import { DynamicFormsCoreModule } from "@ng2-dynamic-forms/core";
 import { DynamicFormsBootstrapUIModule } from "@ng2-dynamic-forms/ui-bootstrap";
+import { AccordionModule } from 'ngx-bootstrap/accordion';
 
 import { AppComponent } from './app.component';
 import { FormularEditorComponent } from './formular-editor/formular-editor.component';
@@ -34,7 +35,8 @@ const routes = [
         HttpModule,
         RouterModule.forRoot(routes),
         DynamicFormsCoreModule.forRoot(),
-        DynamicFormsBootstrapUIModule
+        DynamicFormsBootstrapUIModule,
+        AccordionModule.forRoot()
     ],
     entryComponents: [
         InputFieldComponent
