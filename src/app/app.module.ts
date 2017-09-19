@@ -16,8 +16,6 @@ import { InputFieldComponent } from './components/input-field/input-field.compon
 import { DynamicForm2Component } from './components/dynamic-form2/dynamic-form2.component'
 
 const routes = [
-    { path: 'formular-editor', component: FormularEditorComponent },
-    { path: 'functions', component: AppComponent },
     { path: 'dynamic-editor', component: DynamicForm2Component }
 ];
 
