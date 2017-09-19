@@ -101,18 +101,25 @@ export class OfficeService {
      *  Dictionary mit den Feldern 'title' und 'text'. Z.B. { title: 'Feld', text: 'Inhalt' }
      */
     async updateContentControl(data) : Promise<void> {
-        await Word.run(async(context) => {
+        Word.run(context => {
             var doc = context.document;
             var controls = doc.contentControls;
+            controls.load("items");
 
-            for (var c of data) {
-                var res = controls.getByTitle(c.title);
-                var f = res.getFirstOrNullObject();
+            return context.sync().then(() => {
+                for (var c of data) {
+                    var items = controls.items;
+                    var f = items.find(cc => {
+                       return cc.title === c.title;
+                    });
 
-                f.insertText(c.text, 'Replace');
-            }
+                    if (f != null) {
+                      f.insertText(c.text, 'Replace');
+                    }
+                }
 
-            await context.sync();
+                context.sync();
+            });
         });
     }
 
