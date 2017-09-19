@@ -173,19 +173,19 @@ export class OfficeService {
      *      Anschließend muss die Liste aus den trackedObjects des Contexts entfernt werden.
      */
     async getParagraphs(tracked: boolean = true) : Promise<Word.ParagraphCollection> {
-        var paragraphs;
+        return Word.run(context => {
+            return new Promise<Word.ParagraphCollection>(resolve => {
+                var paragraphs = context.document.body.paragraphs;
+                paragraphs.load('items');
 
-        await Word.run(async(context) => {
-            paragraphs = context.document.body.paragraphs;
-            paragraphs.load('items');
+                if (tracked)
+                    context.trackedObjects.add(paragraphs);
 
-            if (tracked)
-                context.trackedObjects.add(paragraphs);
-
-            await context.sync(paragraphs);
+                context.sync(paragraphs).then(() => {
+                    resolve(paragraphs);
+                });
+            });
         });
-
-        return paragraphs;
     }
 
     async hideRange(range: Word.Range) : Promise<void> {
