@@ -104,6 +104,16 @@ export class AppComponent implements OnInit {
         });
     }
 
+    wrapSelection() {
+        Word.run(context => {
+            var rng = context.document.getSelection();
+            context.trackedObjects.add(rng);
+            this.office.createContentControl(rng, "Feld4", ['WollMux'], true);
+            context.trackedObjects.remove(rng);
+            return context.sync();
+        });
+    }
+
     async testXml() {
         this.office.addXml('<test xmlns="http://muenchen.de"></test>').then(id => {
             console.log(id);

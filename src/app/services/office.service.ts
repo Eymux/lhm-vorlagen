@@ -94,6 +94,19 @@ export class OfficeService {
         });
     }
 
+    async createContentControl(range: Word.Range, title: string='', tags:string[]=[], editable = false) {
+        Word.run(context => {
+            var cc = range.insertContentControl();
+            cc.title = title;
+            if (tags.length > 0) {
+                cc.tag = tags.join(' ');
+            }
+            cc.cannotEdit = !editable;
+
+            return context.sync();
+        });
+    }
+
     /**
      * Ändert den Text eines ContentControls.
      *
