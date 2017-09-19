@@ -71,7 +71,7 @@ export class AppComponent implements OnInit {
     }
 
     onInsertDocument() {
-        this.office.insertDocumentFromURL("https://192.168.1.104:4200/assets/test1.docx", 'End');
+        this.office.insertDocumentFromURL("https://" + window.location.hostname + ":" + window.location.port + "/assets/test1.docx", 'End');
     }
 
     onOpenDialog() {
