@@ -201,8 +201,14 @@ export class OfficeService {
 
                     for (var i=0; i < el.length; i++) {
                         var t = el.item(i);
-                        var rpr = t.previousSibling;
                         var vanish = doc.createElementNS('http://schemas.openxmlformats.org/wordprocessingml/2006/main', 'w:vanish');
+                        var rpr = t.previousSibling;
+
+                        if (rpr == null) {
+                            rpr = doc.createElementNS('http://schemas.openxmlformats.org/wordprocessingml/2006/main', 'w:rPr');
+                            t.parentNode.insertBefore(rpr, t);
+                        }
+
                         rpr.appendChild(vanish);
                     }
 
