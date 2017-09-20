@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
 
     @ViewChild('text') msg : ElementRef;
 
-    constructor (private http: Http, private office: OfficeService, private location: LocationStrategy) {}
+    constructor (private http: Http, private office: OfficeService) {}
 
     ngOnInit() {
         //this.msg.nativeElement.textContent = "Init";
@@ -72,11 +72,12 @@ export class AppComponent implements OnInit {
     }
 
     onInsertDocument() {
-        this.office.insertDocumentFromURL(this.location.prepareExternalUrl("/assets/test1.docx"), 'End');
+        var url = `${location.origin}/assets/test1.docx`;
+        this.office.insertDocumentFromURL(url, 'End');
     }
 
     onOpenDialog() {
-        var url = this.location.prepareExternalUrl("/formular-editor");
+        var url = `${location.origin}/formular-editor`;
         this.office.showDialog(url, { width: 64, height: 64 }, function (asyncResult) {
             if (asyncResult.status !== Office.AsyncResultStatus.Succeeded) {
                 // TODO: Handle error.
