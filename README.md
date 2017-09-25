@@ -14,13 +14,9 @@ Installiert alle Abhängigkeiten des Projekts.
 
 ## Starten des Servers
 
-`ng serve`
+`npm start`
 
-Startet den Entwicklungsserver auf `http://localhost:4200/`.
-
-`ng serve --sourcemaps=true`
-
-Startet den Server mit zusätzlichen Debuginformationen.
+Startet den Entwicklungsserver auf `https://localhost:4200/`.
 
 ## Einstellungen
 
@@ -28,11 +24,13 @@ Startet den Server mit zusätzlichen Debuginformationen.
 
 Unter Extras/Internetoptionen/Erweitert/Einstellungen/Browsen müssen die Checkboxen *Skriptdebugging deaktivieren (Andere)* und *Skriptdebugging deaktivieren (Internet Explorer)* abgeschaltet sein.
 
+Das Zertifikat für SSL muss im Internet Explorer installiert werden. ([Anleitung](https://server.arcgis.com/de/server/10.3/administer/linux/suppress-warnings-from-self-signed-certificates.htm))
+
 ### Microsoft Office
 
 Microsoft Office muss auf das Manifest `manifest/lhm-vorlagen-manifest.xml` zugreifen können. Dazu muss der Ordner `manifest` im Netzwerk freigegeben werden ([Anleitung](http://praxistipps.chip.de/ordner-fuer-netzwerk-freigeben-so-funktionierts_19213)).
 
-Der Netzwerkpfad muss in Microsoft Office als Trusted Catalog registriert werden (`File/Options/Trust Center/Trust Center Settings/Trusted Add-In Catalogs`).
+Der Netzwerkpfad der Freigabe muss in Microsoft Office als Trusted Catalog registriert werden (`File/Options/Trust Center/Trust Center Settings/Trusted Add-In Catalogs`).
 
 Anschließend kann das Add-In über das Einfügen-Menü zu einem neuen Dokument hinzugefügt werden.
 
