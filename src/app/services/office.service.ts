@@ -7,16 +7,8 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 import { XMLSerializer } from 'xmldom';
-
-export type InsertLocation = 'Replace' | 'Start' | 'End' | 'Before' | 'After';
-
-export enum ControlType {
-    RichText,
-    CheckBox,
-    ComboBox,
-    Button
-}
-
+import { IOfficeService } from "app/services/ioffice-service";
+import { InsertLocation, ControlType } from "app/services/office-types";
 
 /**
  * Stellt High-Level-Funktionen für die Arbeit mit MS Office-Dokumenten
@@ -25,7 +17,7 @@ export enum ControlType {
  * Alle Funktionen sind asynchron und geben Promises zurück.
  */
 @Injectable()
-export class OfficeService {
+export class OfficeService implements IOfficeService {
     private chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
     constructor(private http: Http) { }
@@ -293,6 +285,22 @@ export class OfficeService {
         return new Promise<void>(resolve => {
             Office.context.document.customXmlParts.getByIdAsync(id, result => {
                 result.value.deleteAsync(() => {});
+                resolve();
+            });
+        });
+    }
+
+    async addNodeInsertedHandler(id: string, handler: (e) => void) : Promise<void> {
+        return this.addNodeEventHandler(id, Office.EventType.NodeInserted, handler);
+    }
+    async addNodeDeletedHandler(id: string, handler: (e) => void) : Promise<void> {
+        return this.addNodeEventHandler(id, Office.EventType.NodeDeleted, handler);
+    }
+
+    private addNodeEventHandler(id: string, eventType: Office.EventType, handler: (e) => void) : Promise<void> {
+        return new Promise<void>(resolve => {
+            Office.context.document.customXmlParts.getByIdAsync(id, result => {
+                result.value.addHandlerAsync(eventType, handler);
                 resolve();
             });
         });

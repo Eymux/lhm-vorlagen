@@ -1,8 +1,9 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, Inject, forwardRef } from '@angular/core';
 import { DynamicFormControlModel, DynamicFormService, DynamicCheckboxModel, DynamicInputModel, DynamicRadioGroupModel, DynamicSelectModel } from "@ng2-dynamic-forms/core";
 import { FormGroup } from '@angular/forms';
 
-import { OfficeService, ControlType } from '../../services/office.service';
+import { IOfficeService } from "app/services/ioffice-service";
+import { ControlType } from "app/services/office-types";
 
 @Component({
     selector: 'app-dynamic-form2',
@@ -13,7 +14,7 @@ export class DynamicForm2Component implements OnInit {
     formModel: DynamicFormControlModel[] = [];
     formGroup: FormGroup;
 
-    constructor(private office: OfficeService, private formService: DynamicFormService, private zone: NgZone) { }
+    constructor(private office: IOfficeService, private formService: DynamicFormService, private zone: NgZone) { }
 
     ngOnInit() {
         this.office.getAllContentControls().then ((controls) => {

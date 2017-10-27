@@ -6,7 +6,7 @@ import { Http, Response, ResponseContentType } from '@angular/http';
 
 import { XMLSerializer } from 'xmldom';
 
-import { OfficeService } from './services/office.service';
+import { IOfficeService } from "app/services/ioffice-service";
 
 @Component({
   selector: 'app-root',
@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
 
     @ViewChild('text') msg : ElementRef;
 
-    constructor (private http: Http, private office: OfficeService) {}
+    constructor (private http: Http, private office: IOfficeService) {}
 
     ngOnInit() {
         //this.msg.nativeElement.textContent = "Init";
@@ -39,6 +39,10 @@ export class AppComponent implements OnInit {
         //             console.log('Debug info: ' + JSON.stringify(error.debugInfo));
         //         }
         //     });
+    }
+
+    onNodeInserted(e) {
+        debugger
     }
 
     clicked() {
@@ -118,11 +122,30 @@ export class AppComponent implements OnInit {
 
     async testXml() {
         this.office.addXml('<test xmlns="http://muenchen.de"></test>').then(id => {
-            console.log(id);
+            this.office.addNodeInsertedHandler(id, this.onNodeInserted);
 
-            this.office.deleteXmlById(id).then(() => {
-                console.log("Success!");
+            Office.context.document.customXmlParts.getByIdAsync(id, result => {
+                var p: Office.CustomXmlPart  = result.value;
+                p.getNodesAsync('*', (result) => {
+                    var nodes: Office.CustomXmlNode[] = result.value;
+                    var node = nodes.pop();
+                    node.getXmlAsync(result => {
+                        var parser = new DOMParser();
+                        var doc = parser.parseFromString(result.value, 'application/xml');
+                        var n = doc.createElementNS('http://muenchen.de', 'testNode');
+                        doc.getElementsByTagName('test').item(0).appendChild(n);
+
+                        var ser = new XMLSerializer();
+                        var xml = ser.serializeToString(doc);
+                        debugger
+                        node.setXmlAsync(xml);
+                    });
+                });
             });
+
+            // this.office.deleteXmlById(id).then(() => {
+            //     console.log("Success!");
+            // });
         });
     }
 }
