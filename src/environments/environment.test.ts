@@ -1,4 +1,4 @@
-import { OfficeMockService } from "app/services/office-mock.service";
+import { OfficeMockService } from 'app/services/office-mock.service';
 
 export const environment = {
     production: false,

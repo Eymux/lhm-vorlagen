@@ -1,4 +1,4 @@
-import { OfficeService } from "app/services/office.service";
+import { OfficeService } from 'app/services/office.service';
 
 export const environment = {
   production: true,

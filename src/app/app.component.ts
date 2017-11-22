@@ -1,12 +1,13 @@
+// tslint:disable-next-line:no-reference
 /// <reference path="../../node_modules/@types/office-js/index.d.ts" />
 
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import {LocationStrategy} from '@angular/common';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { LocationStrategy } from '@angular/common';
 import { Http, Response, ResponseContentType } from '@angular/http';
 
 import { XMLSerializer } from 'xmldom';
 
-import { IOfficeService } from "app/services/ioffice-service";
+import { IOfficeService } from 'app/services/ioffice-service';
 
 @Component({
   selector: 'app-root',
@@ -16,12 +17,12 @@ import { IOfficeService } from "app/services/ioffice-service";
 export class AppComponent implements OnInit {
     title = 'app works!';
 
-    @ViewChild('text') msg : ElementRef;
+    @ViewChild('text') msg: ElementRef;
 
-    constructor (private http: Http, private office: IOfficeService) {}
+    constructor(private http: Http, private office: IOfficeService) {}
 
-    ngOnInit() {
-        //this.msg.nativeElement.textContent = "Init";
+    ngOnInit(): void {
+        // this.msg.nativeElement.textContent = "Init";
         // Word.run(context => {
         //     var body = context.document.body;
         //     context.load(body, 'text');
@@ -41,21 +42,21 @@ export class AppComponent implements OnInit {
         //     });
     }
 
-    onNodeInserted(e) {
-        debugger
+    onNodeInserted(e): void {
+        debugger;
     }
 
-    clicked() {
-        var p;
+    clicked(): void {
+        let p;
 
-        this.office.getParagraphs().then(async(paragraphs) => {
+        this.office.getParagraphs().then(async paragraphs => {
             p = paragraphs;
             paragraphs.load('font');
 
-            await paragraphs.context.sync().then(async() => {
-                var p = paragraphs.items[2];
-                var font = p.font;
-                var ooxml = p.getOoxml();
+            await paragraphs.context.sync().then(async () => {
+                const para = paragraphs.items[2];
+                const font = para.font;
+                const ooxml = para.getOoxml();
 
                 await paragraphs.context.sync().then(() => {
                     debugger;
@@ -66,7 +67,6 @@ export class AppComponent implements OnInit {
             p.context.trackedObjects.remove(p);
         });
 
-
         // this.office.getContentControl('Field1')
         //     .then(f => {
         //         this.msg.nativeElement.innerHTML = f.text;
@@ -75,14 +75,14 @@ export class AppComponent implements OnInit {
         //     });
     }
 
-    onInsertDocument() {
-        var url = `${location.origin}/assets/test1.docx`;
+    onInsertDocument(): void {
+        const url = `${location.origin}/assets/test1.docx`;
         this.office.insertDocumentFromURL(url, 'End');
     }
 
-    onOpenDialog() {
-        var url = `${location.origin}/formular-editor`;
-        this.office.showDialog(url, { width: 64, height: 64 }, function (asyncResult) {
+    onOpenDialog(): void {
+        const url = `${location.origin}/formular-editor`;
+        this.office.showDialog(url, { width: 64, height: 64 }, asyncResult => {
             if (asyncResult.status !== Office.AsyncResultStatus.Succeeded) {
                 // TODO: Handle error.
                 return;
@@ -90,9 +90,9 @@ export class AppComponent implements OnInit {
         });
     }
 
-    hideSelection() {
+    hideSelection(): void {
         Word.run(context => {
-            var rng = context.document.getSelection();
+            const rng = context.document.getSelection();
             context.trackedObjects.add(rng);
             this.office.hideRange(rng);
             context.trackedObjects.remove(rng);
@@ -100,9 +100,9 @@ export class AppComponent implements OnInit {
         });
     }
 
-    unhideSelection() {
+    unhideSelection(): void {
         Word.run(context => {
-            var rng = context.document.getSelection();
+            const rng = context.document.getSelection();
             context.trackedObjects.add(rng);
             this.office.unhideRange(rng);
             context.trackedObjects.remove(rng);
@@ -110,34 +110,34 @@ export class AppComponent implements OnInit {
         });
     }
 
-    wrapSelection() {
+    wrapSelection(): void {
         Word.run(context => {
-            var rng = context.document.getSelection();
+            const rng = context.document.getSelection();
             context.trackedObjects.add(rng);
-            this.office.createContentControl(rng, "Feld4", ['WollMux'], true);
+            this.office.createContentControl(rng, 'Feld4', ['WollMux'], true);
             context.trackedObjects.remove(rng);
             return context.sync();
         });
     }
 
-    async testXml() {
+    async testXml(): Promise<void> {
         this.office.addXml('<test xmlns="http://muenchen.de"></test>').then(id => {
             this.office.addNodeInsertedHandler(id, this.onNodeInserted);
 
             Office.context.document.customXmlParts.getByIdAsync(id, result => {
-                var p: Office.CustomXmlPart  = result.value;
-                p.getNodesAsync('*', (result) => {
-                    var nodes: Office.CustomXmlNode[] = result.value;
-                    var node = nodes.pop();
-                    node.getXmlAsync(result => {
-                        var parser = new DOMParser();
-                        var doc = parser.parseFromString(result.value, 'application/xml');
-                        var n = doc.createElementNS('http://muenchen.de', 'testNode');
+                const p: Office.CustomXmlPart  = result.value;
+                p.getNodesAsync('*', res => {
+                    const nodes: Office.CustomXmlNode[] = res.value;
+                    const node = nodes.pop();
+                    node.getXmlAsync(res2 => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(res2.value, 'application/xml');
+                        const n = doc.createElementNS('http://muenchen.de', 'testNode');
                         doc.getElementsByTagName('test').item(0).appendChild(n);
 
-                        var ser = new XMLSerializer();
-                        var xml = ser.serializeToString(doc);
-                        debugger
+                        const ser = new XMLSerializer();
+                        const xml = ser.serializeToString(doc);
+                        debugger;
                         node.setXmlAsync(xml);
                     });
                 });

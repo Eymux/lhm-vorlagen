@@ -3,11 +3,11 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router';
-import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { environment } from '../environments/environment';
 
-import { DynamicFormsCoreModule } from "@ng2-dynamic-forms/core";
-import { DynamicFormsBootstrapUIModule } from "@ng2-dynamic-forms/ui-bootstrap";
+import { DynamicFormsCoreModule } from '@ng2-dynamic-forms/core';
+import { DynamicFormsBootstrapUIModule } from '@ng2-dynamic-forms/ui-bootstrap';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 
 import { AppComponent } from './app.component';
@@ -15,8 +15,8 @@ import { FormularEditorComponent } from './formular-editor/formular-editor.compo
 import { OfficeService } from './services/office.service';
 import { WmfieldDirective } from './directives/wmfield.directive';
 import { InputFieldComponent } from './components/input-field/input-field.component';
-import { DynamicForm2Component } from './components/dynamic-form2/dynamic-form2.component'
-import { IOfficeService } from "app/services/ioffice-service";
+import { DynamicForm2Component } from './components/dynamic-form2/dynamic-form2.component';
+import { IOfficeService } from 'app/services/ioffice-service';
 
 const routes = [
     { path: 'dynamic-editor', component: DynamicForm2Component }

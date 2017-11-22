@@ -1,11 +1,11 @@
-import { browser, element, by } from 'protractor';
+import { browser, by, element, promise } from 'protractor';
 
 export class LhmVorlagenPage {
-  navigateTo() {
+  navigateTo(): promise.Promise<any> {
     return browser.get('/');
   }
 
-  getParagraphText() {
+  getParagraphText(): promise.Promise<string> {
     return element(by.css('app-root h1')).getText();
   }
 }

@@ -7,8 +7,8 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 import { XMLSerializer } from 'xmldom';
-import { IOfficeService } from "app/services/ioffice-service";
-import { InsertLocation, ControlType } from "app/services/office-types";
+import { IOfficeService } from 'app/services/ioffice-service';
+import { ControlType, InsertLocation } from 'app/services/office-types';
 
 /**
  * Stellt High-Level-Funktionen für die Arbeit mit MS Office-Dokumenten
@@ -18,9 +18,21 @@ import { InsertLocation, ControlType } from "app/services/office-types";
  */
 @Injectable()
 export class OfficeService implements IOfficeService {
-    private chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    private chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
     constructor(private http: Http) { }
+
+    /**
+     * Öffnet eine Webseite in einem modalen Dialog.
+     * Funktioniert nur mit HTTPS.
+     *
+     * @param {string} url
+     * @param {Office.DialogOptions} options
+     * @param {} callback
+     */
+    showDialog(url: string, options?: Office.DialogOptions, callback?: (result: Office.AsyncResult) => void): void {
+        Office.context.ui.displayDialogAsync(url, options, callback);
+    }
 
     /**
      * Lädt ein Dokument über HTTP und fügt es in das aktive Dokument ein.
@@ -31,19 +43,20 @@ export class OfficeService implements IOfficeService {
      * @param {InsertLocation} loc
      *  Position an der das Dokument eingefügt werden soll.
      */
-    async insertDocumentFromURL(url: string, loc: InsertLocation) : Promise<void> {
-         await this.http.get(url, { responseType: ResponseContentType.ArrayBuffer })
-            .map(res => {
-                return res.arrayBuffer();
-            })
-            .subscribe(buf => {
-                Word.run(context => {
-                    var body = context.document.body;
-                    body.insertFileFromBase64(this.encode(buf), loc);
-                    return context.sync();
-                });
-                err => console.log(err);
+    async insertDocumentFromURL(url: string, loc: InsertLocation): Promise<void> {
+        debugger;
+        await this.http.get(url, { responseType: ResponseContentType.ArrayBuffer })
+        .map(res => {
+            return res.arrayBuffer();
+        })
+        .subscribe(buf => {
+            Word.run(context => {
+                const body = context.document.body;
+                body.insertFileFromBase64(this.encode(buf), loc);
+                return context.sync();
             });
+            err => console.log(err);
+        });
     }
 
     /**
@@ -52,18 +65,18 @@ export class OfficeService implements IOfficeService {
      * @param {string} title
      *  Feldname des ContentControls
      */
-    async getContentControl(title: string) : Promise<Word.ContentControl> {
+    async getContentControl(title: string): Promise<Word.ContentControl> {
         return Word.run(context => {
             return new Promise<Word.ContentControl>(resolve => {
-                var doc = context.document;
+                const doc = context.document;
 
-                var controls = doc.contentControls;
-                var fields = controls.getByTitle(title);
-                var control = fields.getFirst()
+                const controls = doc.contentControls;
+                const fields = controls.getByTitle(title);
+                const control = fields.getFirst();
                 control.load('tag, title, text');
 
-                context.sync(control).then(control => {
-                    resolve(control);
+                context.sync(control).then(cont => {
+                    resolve(cont);
                 });
             });
         });
@@ -72,23 +85,23 @@ export class OfficeService implements IOfficeService {
     /**
      * Gibt eine Liste aller ContentControls im aktiven Dokument zurück.
      */
-    async getAllContentControls() : Promise<Word.ContentControlCollection> {
+    async getAllContentControls(): Promise<Word.ContentControlCollection> {
         return Word.run(context => {
             return new Promise<Word.ContentControlCollection>(resolve => {
-                var doc = context.document;
-                var controls = doc.contentControls;
+                const doc = context.document;
+                const controls = doc.contentControls;
                 controls.load('items');
 
-                context.sync(controls).then(controls => {
-                    resolve(controls);
+                context.sync(controls).then(cont => {
+                    resolve(cont);
                 });
             });
         });
     }
 
-    async createContentControl(range: Word.Range, title: string='', tags:string[]=[], editable = false) {
+    async createContentControl(range: Word.Range, title = '', tags: string[] = [], editable = false): Promise<void> {
         Word.run(context => {
-            var cc = range.insertContentControl();
+            const cc = range.insertContentControl();
             cc.title = title;
             if (tags.length > 0) {
                 cc.tag = tags.join(' ');
@@ -105,20 +118,20 @@ export class OfficeService implements IOfficeService {
      * @param {} data
      *  Dictionary mit den Feldern 'title' und 'text'. Z.B. { title: 'Feld', text: 'Inhalt' }
      */
-    async updateContentControl(data) : Promise<void> {
+    async updateContentControl(data): Promise<void> {
         Word.run(context => {
-            var doc = context.document;
-            var controls = doc.contentControls;
-            controls.load("items");
+            const doc = context.document;
+            const controls = doc.contentControls;
+            controls.load('items');
 
             return context.sync().then(() => {
-                for (var c of data) {
-                    var items = controls.items;
-                    var f = items.find(cc => {
+                for (const c of data) {
+                    const items = controls.items;
+                    const f = items.find(cc => {
                        return cc.title === c.title;
                     });
 
-                    if (f != null) {
+                    if (f !== undefined) {
                       f.insertText(c.text, 'Replace');
                     }
                 }
@@ -128,23 +141,23 @@ export class OfficeService implements IOfficeService {
         });
     }
 
-    getTags(control: Word.ContentControl) : string[] {
-        var tag = control.tag;
-        return tag.split(" ");
+    getTags(control: Word.ContentControl): string[] {
+        const tag = control.tag;
+        return tag.split(' ');
     }
 
-    isWollMux(control: Word.ContentControl) : boolean {
-        var tags = this.getTags(control);
-        var wmTag = tags.find(tag => tag === "WollMux");
-        return (wmTag != null);
+    isWollMux(control: Word.ContentControl): boolean {
+        const tags = this.getTags(control);
+        const wmTag = tags.find(tag => tag === 'WollMux');
+        return (wmTag !== undefined);
     }
 
-    getType(control: Word.ContentControl) : ControlType {
-        var tags = this.getTags(control);
+    getType(control: Word.ContentControl): ControlType {
+        const tags = this.getTags(control);
 
-        if (tags.find(tag => tag === "CheckBox") != null) {
+        if (tags.find(tag => tag === 'CheckBox') !== undefined) {
             return ControlType.CheckBox;
-        } else if (tags.find(tag => tag === "ComboBox") != null) {
+        } else if (tags.find(tag => tag === 'ComboBox') !== undefined) {
             return ControlType.ComboBox;
         } else {
             return ControlType.RichText;
@@ -177,14 +190,15 @@ export class OfficeService implements IOfficeService {
      *      Wenn true, dann kann die Liste für weitere Office.js-Operationen verwendet werden.
      *      Anschließend muss die Liste aus den trackedObjects des Contexts entfernt werden.
      */
-    async getParagraphs(tracked: boolean = true) : Promise<Word.ParagraphCollection> {
+    async getParagraphs(tracked = true): Promise<Word.ParagraphCollection> {
         return Word.run(context => {
             return new Promise<Word.ParagraphCollection>(resolve => {
-                var paragraphs = context.document.body.paragraphs;
+                const paragraphs = context.document.body.paragraphs;
                 paragraphs.load('items');
 
-                if (tracked)
+                if (tracked) {
                     context.trackedObjects.add(paragraphs);
+                }
 
                 context.sync(paragraphs).then(() => {
                     resolve(paragraphs);
@@ -193,23 +207,24 @@ export class OfficeService implements IOfficeService {
         });
     }
 
-    async hideRange(range: Word.Range) : Promise<void> {
+    async hideRange(range: Word.Range): Promise<void> {
         Word.run (context => {
+            debugger;
             range.select();
 
             return context.sync().then(() => {
-                var ooxml = Office.context.document.getSelectedDataAsync(Office.CoercionType.Ooxml, result => {
-                    var parser = new DOMParser();
-                    var doc = parser.parseFromString(result.value, 'application/xml');
+                const ooxml = Office.context.document.getSelectedDataAsync(Office.CoercionType.Ooxml, result => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(result.value, 'application/xml');
 
-                    var el = doc.getElementsByTagName('w:t');
+                    const el = doc.getElementsByTagName('w:t');
 
-                    for (var i=0; i < el.length; i++) {
-                        var t = el.item(i);
-                        var vanish = doc.createElementNS('http://schemas.openxmlformats.org/wordprocessingml/2006/main', 'w:vanish');
-                        var rpr = t.previousSibling;
+                    for (let i = 0; i < el.length; i++) {
+                        const t = el.item(i);
+                        const vanish = doc.createElementNS('http://schemas.openxmlformats.org/wordprocessingml/2006/main', 'w:vanish');
+                        let rpr = t.previousSibling;
 
-                        if (rpr == null) {
+                        if (rpr === null) {
                             rpr = doc.createElementNS('http://schemas.openxmlformats.org/wordprocessingml/2006/main', 'w:rPr');
                             t.parentNode.insertBefore(rpr, t);
                         }
@@ -217,8 +232,8 @@ export class OfficeService implements IOfficeService {
                         rpr.appendChild(vanish);
                     }
 
-                    var ser = new XMLSerializer();
-                    var xml = ser.serializeToString(doc);
+                    const ser = new XMLSerializer();
+                    const xml = ser.serializeToString(doc);
 
                     Office.context.document.setSelectedDataAsync(xml, { coercionType: Office.CoercionType.Ooxml });
                 });
@@ -226,24 +241,24 @@ export class OfficeService implements IOfficeService {
         }).catch(error => console.log(error));
     }
 
-    async unhideRange(range: Word.Range) : Promise<void> {
-        Word.run (async(context) => {
+    async unhideRange(range: Word.Range): Promise<void> {
+        Word.run (async context => {
             range.select();
 
             return context.sync().then(() => {
-                var ooxml = Office.context.document.getSelectedDataAsync(Office.CoercionType.Ooxml, result => {
-                    var parser = new DOMParser();
-                    var doc = parser.parseFromString(result.value, 'application/xml');
+                const ooxml = Office.context.document.getSelectedDataAsync(Office.CoercionType.Ooxml, result => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(result.value, 'application/xml');
 
-                    var el = doc.getElementsByTagName('w:vanish');
+                    const el = doc.getElementsByTagName('w:vanish');
 
                     while (el.length > 0) {
-                        var t = el.item(0);
+                        const t = el.item(0);
                         t.parentNode.removeChild(t);
                     }
 
-                    var ser = new XMLSerializer();
-                    var xml = ser.serializeToString(doc);
+                    const ser = new XMLSerializer();
+                    const xml = ser.serializeToString(doc);
 
                     Office.context.document.setSelectedDataAsync(xml, { coercionType: Office.CoercionType.Ooxml });
                 });
@@ -251,15 +266,15 @@ export class OfficeService implements IOfficeService {
         });
     }
 
-    async addXml(xml: string) : Promise<string> {
+    async addXml(xml: string): Promise<string> {
         return new Promise<string>(resolve => {
-            Office.context.document.customXmlParts.addAsync(xml, null, result => {
+            Office.context.document.customXmlParts.addAsync(xml, undefined, result => {
                 resolve(result.value.id);
             });
         });
     }
 
-    async getXmlById(id: string) : Promise<string> {
+    async getXmlById(id: string): Promise<string> {
         return new Promise<string>(resolve => {
             Office.context.document.customXmlParts.getByIdAsync(id, result => {
                 result.value.getXmlAsync({}, e => {
@@ -269,11 +284,11 @@ export class OfficeService implements IOfficeService {
         });
     }
 
-    async getXmlIdsByNamespace(ns: string) : Promise<string[]> {
+    async getXmlIdsByNamespace(ns: string): Promise<string[]> {
         return new Promise<string[]>(resolve => {
             Office.context.document.customXmlParts.getByNamespaceAsync(ns, result => {
-                var ret = [];
-                for (let r of <Office.CustomXmlPart[]>result.value) {
+                const ret = [];
+                for (const r of result.value as Office.CustomXmlPart[]) {
                     ret.push(r.id);
                 }
                 resolve(ret);
@@ -281,7 +296,7 @@ export class OfficeService implements IOfficeService {
         });
     }
 
-    async deleteXmlById(id: string) : Promise<void> {
+    async deleteXmlById(id: string): Promise<void> {
         return new Promise<void>(resolve => {
             Office.context.document.customXmlParts.getByIdAsync(id, result => {
                 result.value.deleteAsync(() => {});
@@ -290,14 +305,14 @@ export class OfficeService implements IOfficeService {
         });
     }
 
-    async addNodeInsertedHandler(id: string, handler: (e) => void) : Promise<void> {
+    async addNodeInsertedHandler(id: string, handler: (e) => void): Promise<void> {
         return this.addNodeEventHandler(id, Office.EventType.NodeInserted, handler);
     }
-    async addNodeDeletedHandler(id: string, handler: (e) => void) : Promise<void> {
+    async addNodeDeletedHandler(id: string, handler: (e) => void): Promise<void> {
         return this.addNodeEventHandler(id, Office.EventType.NodeDeleted, handler);
     }
 
-    private addNodeEventHandler(id: string, eventType: Office.EventType, handler: (e) => void) : Promise<void> {
+    async addNodeEventHandler(id: string, eventType: Office.EventType, handler: (e) => void): Promise<void> {
         return new Promise<void>(resolve => {
             Office.context.document.customXmlParts.getByIdAsync(id, result => {
                 result.value.addHandlerAsync(eventType, handler);
@@ -307,27 +322,17 @@ export class OfficeService implements IOfficeService {
     }
 
     /**
-     * Öffnet eine Webseite in einem modalen Dialog.
-     * Funktioniert nur mit HTTPS.
-     *
-     * @param {string} url
-     * @param {Office.DialogOptions} options
-     * @param {} callback
-     */
-    showDialog(url: string, options?: Office.DialogOptions, callback?: (result: Office.AsyncResult) => void) {
-        Office.context.ui.displayDialogAsync(url, options, callback);
-    }
-
-    /**
      * Codiert ein Byte-Array als Base64.
      *
      * @param  {ArrayBuffer} arraybuffer description
      */
-    private encode(arraybuffer) {
-        var bytes = new Uint8Array(arraybuffer),
-        i, len = bytes.length, base64 = "";
+    /* tslint:disable:no-bitwise prefer-template */
+    private encode(arraybuffer): string {
+        const bytes = new Uint8Array(arraybuffer);
+        const len = bytes.length;
+        let base64 = '';
 
-        for (i = 0; i < len; i+=3) {
+        for (let i = 0; i < len; i += 3) {
           base64 += this.chars[bytes[i] >> 2];
           base64 += this.chars[((bytes[i] & 3) << 4) | (bytes[i + 1] >> 4)];
           base64 += this.chars[((bytes[i + 1] & 15) << 2) | (bytes[i + 2] >> 6)];
@@ -335,9 +340,9 @@ export class OfficeService implements IOfficeService {
         }
 
         if ((len % 3) === 2) {
-          base64 = base64.substring(0, base64.length - 1) + "=";
+          base64 = base64.substring(0, base64.length - 1) + '=';
         } else if (len % 3 === 1) {
-          base64 = base64.substring(0, base64.length - 2) + "==";
+          base64 = base64.substring(0, base64.length - 2) + '==';
         }
 
         return base64;
