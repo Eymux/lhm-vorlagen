@@ -42,30 +42,30 @@ export class AppComponent implements OnInit {
         //     });
     }
 
-    onNodeInserted(e): void {
-        debugger;
-    }
+    // onNodeInserted(e): void {
+    //     debugger;
+    // }
 
-    clicked(): void {
-        let p;
+    // clicked(): void {
+    //     let p;
 
-        this.office.getParagraphs().then(async paragraphs => {
-            p = paragraphs;
-            paragraphs.load('font');
+    //     this.office.getParagraphs().then(async paragraphs => {
+    //         p = paragraphs;
+    //         paragraphs.load('font');
 
-            await paragraphs.context.sync().then(async () => {
-                const para = paragraphs.items[2];
-                const font = para.font;
-                const ooxml = para.getOoxml();
+    //         await paragraphs.context.sync().then(async () => {
+    //             const para = paragraphs.items[2];
+    //             const font = para.font;
+    //             const ooxml = para.getOoxml();
 
-                await paragraphs.context.sync().then(() => {
-                    debugger;
-                    console.log(ooxml);
-                });
-            });
-        }).finally(() => {
-            p.context.trackedObjects.remove(p);
-        });
+    //             await paragraphs.context.sync().then(() => {
+    //                 debugger;
+    //                 console.log(ooxml);
+    //             });
+    //         });
+    //     }).finally(() => {
+    //         p.context.trackedObjects.remove(p);
+    //     });
 
         // this.office.getContentControl('Field1')
         //     .then(f => {
@@ -73,79 +73,79 @@ export class AppComponent implements OnInit {
         //         f.insertText("Hello World!", 'Replace');
         //         return f.context.sync();
         //     });
-    }
+    // }
 
     onInsertDocument(): void {
         const url = `${location.origin}/assets/test1.docx`;
         this.office.insertDocumentFromURL(url, 'End');
     }
 
-    onOpenDialog(): void {
-        const url = `${location.origin}/formular-editor`;
-        this.office.showDialog(url, { width: 64, height: 64 }, asyncResult => {
-            if (asyncResult.status !== Office.AsyncResultStatus.Succeeded) {
-                // TODO: Handle error.
-                return;
-            }
-        });
-    }
+    // onOpenDialog(): void {
+    //     const url = `${location.origin}/formular-editor`;
+    //     this.office.showDialog(url, { width: 64, height: 64 }, asyncResult => {
+    //         if (asyncResult.status !== Office.AsyncResultStatus.Succeeded) {
+    //             // TODO: Handle error.
+    //             return;
+    //         }
+    //     });
+    // }
 
-    hideSelection(): void {
-        Word.run(context => {
-            const rng = context.document.getSelection();
-            context.trackedObjects.add(rng);
-            this.office.hideRange(rng);
-            context.trackedObjects.remove(rng);
-            return context.sync();
-        });
-    }
+    // hideSelection(): void {
+    //     Word.run(context => {
+    //         const rng = context.document.getSelection();
+    //         context.trackedObjects.add(rng);
+    //         this.office.hideRange(rng);
+    //         context.trackedObjects.remove(rng);
+    //         return context.sync();
+    //     });
+    // }
 
-    unhideSelection(): void {
-        Word.run(context => {
-            const rng = context.document.getSelection();
-            context.trackedObjects.add(rng);
-            this.office.unhideRange(rng);
-            context.trackedObjects.remove(rng);
-            return context.sync();
-        });
-    }
+    // unhideSelection(): void {
+    //     Word.run(context => {
+    //         const rng = context.document.getSelection();
+    //         context.trackedObjects.add(rng);
+    //         this.office.unhideRange(rng);
+    //         context.trackedObjects.remove(rng);
+    //         return context.sync();
+    //     });
+    // }
 
-    wrapSelection(): void {
-        Word.run(context => {
-            const rng = context.document.getSelection();
-            context.trackedObjects.add(rng);
-            this.office.createContentControl(rng, 'Feld4', ['WollMux'], true);
-            context.trackedObjects.remove(rng);
-            return context.sync();
-        });
-    }
+    // wrapSelection(): void {
+    //     Word.run(context => {
+    //         const rng = context.document.getSelection();
+    //         context.trackedObjects.add(rng);
+    //         this.office.createContentControl(rng, 'Feld4', ['WollMux'], true);
+    //         context.trackedObjects.remove(rng);
+    //         return context.sync();
+    //     });
+    // }
 
-    async testXml(): Promise<void> {
-        this.office.addXml('<test xmlns="http://muenchen.de"></test>').then(id => {
-            this.office.addNodeInsertedHandler(id, this.onNodeInserted);
+    // async testXml(): Promise<void> {
+    //     this.office.addXml('<test xmlns="http://muenchen.de"></test>').then(id => {
+    //         this.office.addNodeInsertedHandler(id, this.onNodeInserted);
 
-            Office.context.document.customXmlParts.getByIdAsync(id, result => {
-                const p: Office.CustomXmlPart  = result.value;
-                p.getNodesAsync('*', res => {
-                    const nodes: Office.CustomXmlNode[] = res.value;
-                    const node = nodes.pop();
-                    node.getXmlAsync(res2 => {
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(res2.value, 'application/xml');
-                        const n = doc.createElementNS('http://muenchen.de', 'testNode');
-                        doc.getElementsByTagName('test').item(0).appendChild(n);
+    //         Office.context.document.customXmlParts.getByIdAsync(id, result => {
+    //             const p: Office.CustomXmlPart  = result.value;
+    //             p.getNodesAsync('*', res => {
+    //                 const nodes: Office.CustomXmlNode[] = res.value;
+    //                 const node = nodes.pop();
+    //                 node.getXmlAsync(res2 => {
+    //                     const parser = new DOMParser();
+    //                     const doc = parser.parseFromString(res2.value, 'application/xml');
+    //                     const n = doc.createElementNS('http://muenchen.de', 'testNode');
+    //                     doc.getElementsByTagName('test').item(0).appendChild(n);
 
-                        const ser = new XMLSerializer();
-                        const xml = ser.serializeToString(doc);
-                        debugger;
-                        node.setXmlAsync(xml);
-                    });
-                });
-            });
+    //                     const ser = new XMLSerializer();
+    //                     const xml = ser.serializeToString(doc);
+    //                     debugger;
+    //                     node.setXmlAsync(xml);
+    //                 });
+    //             });
+    //         });
 
-            // this.office.deleteXmlById(id).then(() => {
-            //     console.log("Success!");
-            // });
-        });
-    }
+    //         // this.office.deleteXmlById(id).then(() => {
+    //         //     console.log("Success!");
+    //         // });
+    //     });
+    // }
 }
