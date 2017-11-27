@@ -1,7 +1,6 @@
 import { ApplicationRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-
-import { OfficeService } from '../services/office.service';
+import { IOfficeService } from 'app/services/ioffice-service';
 
 @Component({
     selector: 'app-formular-editor',
@@ -12,7 +11,7 @@ export class FormularEditorComponent implements OnInit {
     controls = [];
     private form: FormGroup;
 
-    constructor(private formbuilder: FormBuilder, private office: OfficeService, private appRef: ApplicationRef) {
+    constructor(private formbuilder: FormBuilder, private office: IOfficeService, private appRef: ApplicationRef) {
     }
 
     async ngOnInit(): Promise<void> {

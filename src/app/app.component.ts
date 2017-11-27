@@ -63,8 +63,6 @@ export class AppComponent implements OnInit {
                     console.log(ooxml);
                 });
             });
-        }).finally(() => {
-            p.context.trackedObjects.remove(p);
         });
 
         // this.office.getContentControl('Field1')

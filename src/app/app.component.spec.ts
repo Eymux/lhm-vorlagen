@@ -1,13 +1,24 @@
 import { async, TestBed } from '@angular/core/testing';
 
 import { AppComponent } from './app.component';
+import { AccordionComponent } from 'ngx-bootstrap/accordion';
+import { RouterOutlet } from '@angular/router';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { OfficeMockService } from 'app/services/office-mock.service';
+import { IOfficeService } from 'app/services/ioffice-service';
+import { Http } from '@angular/http';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        AppComponent
-      ]
+        AppComponent, AccordionComponent, RouterOutlet
+      ],
+      providers: [
+        Http,
+        { provide: IOfficeService, useClass: OfficeMockService}
+      ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     }).compileComponents();
   }));
 
