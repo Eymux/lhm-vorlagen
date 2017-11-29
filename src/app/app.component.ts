@@ -1,13 +1,15 @@
 // tslint:disable-next-line:no-reference
 /// <reference path="../../node_modules/@types/office-js/index.d.ts" />
 
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { LocationStrategy } from '@angular/common';
 import { Http, Response, ResponseContentType } from '@angular/http';
 
 import { XMLSerializer } from 'xmldom';
 
 import { IOfficeService } from 'app/services/ioffice-service';
+
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +18,7 @@ import { IOfficeService } from 'app/services/ioffice-service';
 })
 export class AppComponent implements OnInit {
     title = 'app works!';
+    @Input() btext = 'Lokale Daten';
 
     @ViewChild('text') msg: ElementRef;
 
@@ -84,6 +87,16 @@ export class AppComponent implements OnInit {
             if (asyncResult.status !== Office.AsyncResultStatus.Succeeded) {
                 // TODO: Handle error.
                 return;
+            }
+        });
+    }
+
+    requestLocalData(): void {
+        $.getJSON('https://localhost:8080/conf.json', (data, status) => {
+            if (status === 'success') {
+                this.btext = data.text;
+            } else {
+                this.btext = 'not working';
             }
         });
     }
